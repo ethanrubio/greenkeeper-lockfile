@@ -7,7 +7,7 @@ const env = process.env
 function isFirstPush(branch, firstPushEnvironment) {
   console.log('outside', firstPushEnvironment);
   if (_.isEmpty(firstPushEnvironment)) {
-    const firstPush = gitHelpers.getNumberOfCommitsOnBranch(branch) === 1;
+    const firstPush = gitHelpers.getNumberOfCommitsOnBranch(branch) === 0;
     console.log('inside first push', firstPush);
     env.FIRST_PUSH = firstPush;
     return firstPush;
