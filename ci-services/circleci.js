@@ -1,23 +1,26 @@
-const _ = require("lodash")
+const _ = require('lodash')
 
-const gitHelpers = require("../lib/git-helpers")
+const gitHelpers = require('../lib/git-helpers')
+
+const config = require('../lib/config')
 
 const env = process.env
 
-function isFirstPush(branch, firstPush) {
+function isFirstPush (branch) {
   const commitNumber = gitHelpers.getNumberOfCommitsOnBranch(branch)
   const commitMessage = gitHelpers.getCommitMessage().trim()
-  console.log(commitNumber === 0 &&
-    _.startsWith(commitMessage, "chore(package): update lockfile"))
-  if (firstPush) {
+
+  if (
+    commitNumber === 0 &&
+    !_.includes(config.updateMessage, commitMessage)
+  ) {
     return true
   }
 
   if (
-    commitNumber === 0 &&
-    !_.startsWith(commitMessage, "chore(package): update lockfile")
+    commitNumber === 1 &&
+    _.includes(config.updateMessage, commitMessage)
   ) {
-    env.FIRST_PUSH = true
     return true
   }
 
@@ -27,7 +30,7 @@ function isFirstPush(branch, firstPush) {
 module.exports = {
   repoSlug: `${env.CIRCLE_PROJECT_USERNAME}/${env.CIRCLE_PROJECT_REPONAME}`,
   branchName: env.CIRCLE_BRANCH,
-  firstPush: isFirstPush(env.CIRCLE_BRANCH, env.FIRST_PUSH),
+  firstPush: isFirstPush(env.CIRCLE_BRANCH),
   correctBuild: _.isEmpty(env.CI_PULL_REQUEST),
-  uploadBuild: env.CIRCLE_NODE_INDEX === "0"
+  uploadBuild: env.CIRCLE_NODE_INDEX === '0'
 }
