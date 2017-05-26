@@ -6,7 +6,7 @@ const env = process.env
 
 function isFirstPush(branch, firstPush) {
   const commitNumber = gitHelpers.getNumberOfCommitsOnBranch(branch)
-  const commitMessage = gitHelpers.getCommitMessage()
+  const commitMessage = gitHelpers.getCommitMessage().trim()
   if (
     commitNumber === 0 &&
     commitMessage !== "chore(package): update lockfile"
