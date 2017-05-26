@@ -7,14 +7,21 @@ const env = process.env
 function isFirstPush(branch, firstPush) {
   const commitNumber = gitHelpers.getNumberOfCommitsOnBranch(branch)
   const commitMessage = gitHelpers.getCommitMessage().trim()
+  console.log(commitNumber === 0 &&
+    _.startsWith(commitMessage, "chore(package): update lockfile"))
+  if (firstPush) {
+    return true
+  }
+
   if (
     commitNumber === 0 &&
-    commitMessage !== "chore(package): update lockfile"
+    !_.startsWith(commitMessage, "chore(package): update lockfile")
   ) {
     env.FIRST_PUSH = true
     return true
   }
-  return env.FIRST_PUSH || false
+
+  return false
 }
 
 module.exports = {
